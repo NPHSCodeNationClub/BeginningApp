@@ -12,10 +12,15 @@ function scene:create(event)
 	points = 0
 
 	scoreTimer = timer.performWithDelay(100, pointsUpdate, 0)
-	
-	score = display.newText("0", display.contentWidth * 0.9, display.contentHeight * 0.9, native.systemFontBold, 40)
-	score:setFillColor(0, 100, 0)
-	screenGroup:insert(score)
+
+	score = display.newText("0", display.contentWidth * 0.5, display.contentHeight * 0.5, native.systemFontBold, 40)
+    
+    player = display.newImage("unicorn.png")
+    player.x = display.contentWidth * 0.5
+    player.y = display.contentHeight * 0.5
+    physics.addBody(player, "static", {density=.08,  bounce=0.1, friction=0.2})
+    screenGroup:insert(player)
+    
 end
 
 function pointsUpdate()
@@ -23,17 +28,27 @@ function pointsUpdate()
 	score.text = string.format("%d", points)
 end
 
+function touchScreen(event)
+    if event.phase == "began" then
+        player.enterFrame = activatePlayer
+        Runtime:addEventListener("enterFrame", player)
+    elseif event.phase == "ended" then
+        Runtime:removeEventListener("enterFrame", player)
+    end
+end
+
 function scene:show(event)
 	if (event.phase == "will") then
 		composer.removeScene("start")
 
 	elseif (event.phase == "did") then
-
+		Runtime:addEventListener("touch", touchScreen)
 	end
 end
 
 function scene:hide(event)
 	if (event.phase == "will") then
+        Runtime:removeEventListener("touch", touchScreen)
 
 	elseif (event.phase == "did") then
 
