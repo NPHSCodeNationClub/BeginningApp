@@ -1,4 +1,4 @@
---start.lua
+--game.lua
 
 local physics = require "physics"
 physics.start()
@@ -9,29 +9,32 @@ local scene = composer.newScene()
 function scene:create(event)
 	local screenGroup = self.view
 
-	startButton = display.newImage("start-button.png")
-	startButton.x = display.contentWidth * 0.5
-	startButton.y = display.contentHeight * 0.5
-	screenGroup:insert(startButton)
+	points = 0
+
+	scoreTimer = timer.performWithDelay(100, pointsUpdate, 0)
+	
+	score = display.newText("0", display.contentWidth * 0.9, display.contentHeight * 0.9, native.systemFontBold, 40)
+	score:setFillColor(0, 100, 0)
+	screenGroup:insert(score)
 end
 
-local function beginGame(event)
-	if (event.phase == "began") then
-		composer.gotoScene("game")
-	end
+function pointsUpdate()
+	points = points + 1
+	score.text = string.format("%d", points)
 end
 
 function scene:show(event)
 	if (event.phase == "will") then
+		composer.removeScene("start")
 
 	elseif (event.phase == "did") then
-		startButton:addEventListener("touch", beginGame)
+
 	end
 end
 
 function scene:hide(event)
 	if (event.phase == "will") then
-		startButton:removeEventListener("touch", beginGame)
+
 	elseif (event.phase == "did") then
 
 	end
