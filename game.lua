@@ -28,6 +28,14 @@ function pointsUpdate()
 	score.text = string.format("%d", points)
 end
 
+function playerReady() 
+    player.bodyType = "dynamic"
+end
+
+function activatePlayer(self, event)
+    self:applyForce(0, -7, self.x, self.y)
+end
+
 function touchScreen(event)
     if event.phase == "began" then
         player.enterFrame = activatePlayer
